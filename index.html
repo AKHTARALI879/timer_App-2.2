@@ -1,0 +1,2046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Timer App with Salah Times</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles with Royal Colors */
+        :root {
+            --royal-purple: #5a189a;
+            --royal-purple-dark: #3c096c;
+            --royal-gold: #ffd700;
+            --royal-blue: #4361ee;
+            --royal-red: #e63946;
+            --royal-green: #06d6a0;
+            --royal-cream: #f8f9fa;
+            --royal-dark: #240046;
+            --royal-gray: #6c757d;
+            --royal-white: #ffffff;
+            --royal-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+            
+            /* Theme variables */
+            --bg-color: var(--royal-cream);
+            --text-color: var(--royal-dark);
+            --card-bg: var(--royal-white);
+            --header-bg: var(--royal-purple);
+            --header-text: var(--royal-white);
+            --footer-bg: var(--royal-purple);
+            --footer-text: var(--royal-white);
+            --accent-color: var(--royal-gold);
+        }
+
+        /* Dark Mode */
+        .dark {
+            --bg-color: var(--royal-dark);
+            --text-color: var(--royal-cream);
+            --card-bg: #2d1b69;
+            --header-bg: #10002b;
+            --header-text: var(--royal-gold);
+            --footer-bg: #10002b;
+            --footer-text: var(--royal-gold);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 1rem 0;
+            box-shadow: var(--royal-shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--royal-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--royal-purple);
+            font-size: 20px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white; /* White title as requested */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--header-text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: rotate(15deg);
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 992px) {
+            .app-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--royal-shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            border-bottom: 2px solid var(--royal-gold);
+            padding-bottom: 0.5rem;
+        }
+
+        .card-title i {
+            color: var(--royal-gold);
+        }
+
+        /* Clock Toggle */
+        .clock-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .toggle-container {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 30px;
+            padding: 5px;
+            display: flex;
+            position: relative;
+            width: 240px;
+            border: 1px solid var(--royal-gold);
+        }
+
+        .toggle-option {
+            padding: 10px 20px;
+            text-align: center;
+            z-index: 1;
+            flex: 1;
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: 25px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .toggle-option.active {
+            color: var(--royal-dark);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: calc(50% - 5px);
+            height: calc(100% - 10px);
+            background-color: var(--royal-gold);
+            border-radius: 25px;
+            transition: var(--transition);
+        }
+
+        .toggle-slider.digital {
+            left: calc(50% + 5px);
+        }
+
+        /* Analog Clock */
+        .clock-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2rem 0;
+        }
+
+        .analog-clock {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            border: 10px solid var(--royal-purple);
+            box-shadow: var(--royal-shadow), 0 0 15px rgba(90, 24, 154, 0.3);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .analog-clock .number {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .analog-clock .number-1 { transform: rotate(30deg); }
+        .analog-clock .number-2 { transform: rotate(60deg); }
+        .analog-clock .number-3 { transform: rotate(90deg); }
+        .analog-clock .number-4 { transform: rotate(120deg); }
+        .analog-clock .number-5 { transform: rotate(150deg); }
+        .analog-clock .number-6 { transform: rotate(180deg); }
+        .analog-clock .number-7 { transform: rotate(210deg); }
+        .analog-clock .number-8 { transform: rotate(240deg); }
+        .analog-clock .number-9 { transform: rotate(270deg); }
+        .analog-clock .number-10 { transform: rotate(300deg); }
+        .analog-clock .number-11 { transform: rotate(330deg); }
+        .analog-clock .number-12 { transform: rotate(0deg); }
+
+        .analog-clock .number span {
+            display: inline-block;
+            transform: rotate(-30deg);
+        }
+        .analog-clock .number-2 span { transform: rotate(-60deg); }
+        .analog-clock .number-3 span { transform: rotate(-90deg); }
+        .analog-clock .number-4 span { transform: rotate(-120deg); }
+        .analog-clock .number-5 span { transform: rotate(-150deg); }
+        .analog-clock .number-6 span { transform: rotate(-180deg); }
+        .analog-clock .number-7 span { transform: rotate(-210deg); }
+        .analog-clock .number-8 span { transform: rotate(-240deg); }
+        .analog-clock .number-9 span { transform: rotate(-270deg); }
+        .analog-clock .number-10 span { transform: rotate(-300deg); }
+        .analog-clock .number-11 span { transform: rotate(-330deg); }
+        .analog-clock .number-12 span { transform: rotate(0deg); }
+
+        .analog-clock .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            border-radius: 10px;
+            transition: transform 0.5s cubic-bezier(0.4, 2.8, 0.3, 0.8);
+        }
+
+        .analog-clock .hour-hand {
+            width: 8px;
+            height: 60px;
+            background-color: var(--royal-dark);
+            transform: translateX(-50%);
+        }
+
+        .analog-clock .minute-hand {
+            width: 6px;
+            height: 80px;
+            background-color: var(--royal-blue);
+            transform: translateX(-50%);
+        }
+
+        .analog-clock .second-hand {
+            width: 2px;
+            height: 90px;
+            background-color: var(--royal-red);
+            transform: translateX(-50%);
+        }
+
+        .analog-clock .center-point {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            background-color: var(--royal-gold);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Digital Clock */
+        .digital-clock {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2rem 0;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--royal-purple);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(45deg, var(--royal-purple), var(--royal-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .digital-clock .colon {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .digital-clock .period {
+            font-size: 1.5rem;
+            align-self: flex-start;
+            margin-left: 0.5rem;
+        }
+
+        /* Alarm Section */
+        .alarm-section {
+            margin-top: 2rem;
+        }
+
+        .alarm-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .alarm-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid rgba(90, 24, 154, 0.3);
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--royal-purple);
+            color: var(--royal-white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--royal-purple-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: var(--royal-red);
+            color: var(--royal-white);
+        }
+
+        .btn-danger:hover {
+            background-color: #c1121f;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background-color: var(--royal-gold);
+            color: var(--royal-dark);
+        }
+
+        .btn-warning:hover {
+            background-color: #e6c200;
+            transform: translateY(-2px);
+        }
+
+        .alarm-list {
+            margin-top: 1rem;
+        }
+
+        .alarm-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+            border-left: 3px solid var(--royal-gold);
+        }
+
+        .alarm-item:hover {
+            transform: translateX(5px);
+        }
+
+        .alarm-time {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .alarm-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--royal-gray);
+            transition: var(--transition);
+        }
+
+        .btn-icon:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            color: var(--royal-red);
+            transform: scale(1.1);
+        }
+
+        /* Prayer Times */
+        .prayer-times {
+            margin-top: 1rem;
+        }
+
+        .prayer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .prayer-item:hover {
+            background-color: rgba(90, 24, 154, 0.05);
+        }
+
+        .prayer-name {
+            font-weight: 600;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .prayer-name i {
+            color: var(--royal-gold);
+            font-size: 1.2rem;
+        }
+
+        .prayer-time {
+            font-weight: 500;
+            color: var(--royal-blue);
+            margin-right: 10px;
+        }
+
+        .next-prayer {
+            background-color: rgba(90, 24, 154, 0.1);
+            border-left: 4px solid var(--royal-gold);
+        }
+
+        /* Prayer Checkbox */
+        .prayer-checkbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .prayer-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--royal-purple);
+        }
+
+        /* Coming Prayer Alert */
+        .coming-prayer-alert {
+            background: linear-gradient(135deg, var(--royal-purple-dark), var(--royal-purple));
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(90, 24, 154, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(90, 24, 154, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(90, 24, 154, 0); }
+        }
+
+        .coming-prayer-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .coming-prayer-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .coming-prayer-time {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .coming-prayer-countdown {
+            font-weight: 700;
+            font-size: 1.2rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        /* Location Info */
+        .location-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+            color: var(--royal-gray);
+            font-size: 0.9rem;
+        }
+
+        .location-info i {
+            color: var(--royal-gold);
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+            max-width: 300px;
+            transition: var(--transition);
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--royal-green);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--royal-red);
+        }
+
+        .toast.warning {
+            border-left: 4px solid var(--royal-gold);
+        }
+
+        .toast i {
+            font-size: 20px;
+        }
+
+        .toast.success i {
+            color: var(--royal-green);
+        }
+
+        .toast.error i {
+            color: var(--royal-red);
+        }
+
+        .toast.warning i {
+            color: var(--royal-gold);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Prayer Alert Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+            border: 2px solid var(--royal-gold);
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--royal-purple-dark), var(--royal-purple));
+            color: white;
+            border-radius: 13px 13px 0 0;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            transition: color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--royal-gold);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Prayer Summary */
+        .prayer-summary {
+            margin-bottom: 20px;
+        }
+
+        .prayer-summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .prayer-summary-name {
+            font-weight: 500;
+        }
+
+        .prayer-summary-status {
+            font-weight: 600;
+        }
+
+        .prayer-summary-status.completed {
+            color: var(--royal-green);
+        }
+
+        .prayer-summary-status.missed {
+            color: var(--royal-red);
+        }
+
+        .prayer-summary-total {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            padding: 10px;
+            background-color: rgba(90, 24, 154, 0.1);
+            border-radius: 5px;
+        }
+
+        /* Hadith of the Day */
+        .hadith-container {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 2rem 0;
+            box-shadow: var(--royal-shadow);
+            border-left: 5px solid var(--royal-gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hadith-container::before {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 5rem;
+            color: rgba(90, 24, 154, 0.1);
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+
+        .hadith-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--royal-purple);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hadith-title i {
+            color: var(--royal-gold);
+        }
+
+        .hadith-content {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+            padding-left: 20px;
+            font-style: italic;
+        }
+
+        .hadith-reference {
+            font-size: 0.9rem;
+            color: var(--royal-gray);
+            text-align: right;
+            font-weight: 500;
+        }
+
+        /* Author Name Animation */
+        .author-container {
+            margin: 3rem 0;
+            text-align: center;
+            overflow: hidden;
+            padding: 20px;
+            background: rgba(90, 24, 154, 0.05);
+            border-radius: 15px;
+        }
+
+        .author-name {
+            font-size: 3.5rem;
+            font-weight: 800;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            position: relative;
+            display: inline-block;
+            animation: colorFlow 8s linear infinite;
+            background: linear-gradient(
+                90deg, 
+                #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff, #ff0000
+            );
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .author-name::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(
+                90deg, 
+                #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff, #ff0000
+            );
+            background-size: 200% auto;
+            animation: colorFlow 8s linear infinite;
+        }
+
+        @keyframes colorFlow {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .author-name span {
+            display: inline-block;
+            animation: wave 2s ease-in-out infinite;
+            animation-delay: calc(0.1s * var(--i));
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 1rem 0;
+            text-align: center;
+            margin-top: auto;
+            transition: var(--transition);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .analog-clock {
+                width: 200px;
+                height: 200px;
+            }
+
+            .digital-clock {
+                font-size: 2.5rem;
+            }
+
+            .alarm-form {
+                flex-direction: column;
+            }
+            
+            .author-name {
+                font-size: 2rem;
+                letter-spacing: 2px;
+            }
+
+            .coming-prayer-alert {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
+
+        /* Hide/Show Clock Types */
+        .clock-display {
+            display: none;
+        }
+
+        .clock-display.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h1>Timer App</h1>
+            </div>
+            <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="app-container">
+                <div class="left-column">
+                    <div class="card">
+                        <h2 class="card-title"><i class="fas fa-clock"></i> Clock</h2>
+                        
+                        <div class="clock-toggle">
+                            <div class="toggle-container">
+                                <div class="toggle-option analog-option active">Analog</div>
+                                <div class="toggle-option digital-option">Digital</div>
+                                <div class="toggle-slider"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="clock-display analog-display active">
+                            <div class="clock-container">
+                                <div class="analog-clock">
+                                    <div class="number number-1"><span>1</span></div>
+                                    <div class="number number-2"><span>2</span></div>
+                                    <div class="number number-3"><span>3</span></div>
+                                    <div class="number number-4"><span>4</span></div>
+                                    <div class="number number-5"><span>5</span></div>
+                                    <div class="number number-6"><span>6</span></div>
+                                    <div class="number number-7"><span>7</span></div>
+                                    <div class="number number-8"><span>8</span></div>
+                                    <div class="number number-9"><span>9</span></div>
+                                    <div class="number number-10"><span>10</span></div>
+                                    <div class="number number-11"><span>11</span></div>
+                                    <div class="number number-12"><span>12</span></div>
+                                    
+                                    <div class="hand hour-hand" id="hour-hand"></div>
+                                    <div class="hand minute-hand" id="minute-hand"></div>
+                                    <div class="hand second-hand" id="second-hand"></div>
+                                    <div class="center-point"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="clock-display digital-display">
+                            <div class="digital-clock">
+                                <span id="hours">00</span>
+                                <span class="colon">:</span>
+                                <span id="minutes">00</span>
+                                <span class="colon">:</span>
+                                <span id="seconds">00</span>
+                                <span class="period" id="period">AM</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h2 class="card-title"><i class="fas fa-bell"></i> Alarm</h2>
+                        
+                        <div class="alarm-section">
+                            <form id="alarm-form" class="alarm-form">
+                                <input type="time" id="alarm-time" class="alarm-input" required>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add Alarm
+                                </button>
+                            </form>
+                            
+                            <div id="alarm-list" class="alarm-list">
+                                <!-- Alarm items will be added here dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="right-column">
+                    <div class="card">
+                        <h2 class="card-title"><i class="fas fa-mosque"></i> Prayer Times</h2>
+                        
+                        <div class="location-info">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="location-display">Loading location...</span>
+                        </div>
+                        
+                        <div id="coming-prayer-alert" class="coming-prayer-alert" style="display: none;">
+                            <div class="coming-prayer-info">
+                                <span class="coming-prayer-name">Next Prayer: <span id="next-prayer-name">Fajr</span></span>
+                                <span class="coming-prayer-time">Time: <span id="next-prayer-time">05:30 AM</span></span>
+                            </div>
+                            <div class="coming-prayer-countdown" id="prayer-countdown">00:00:00</div>
+                        </div>
+                        
+                        <div class="prayer-times" id="prayer-times">
+                            <!-- Prayer times will be added here dynamically -->
+                            <div class="prayer-item">
+                                <div class="prayer-name">
+                                    <i class="fas fa-sun"></i> Fajr
+                                </div>
+                                <div class="prayer-time" id="fajr-time">--:--</div>
+                                <div class="prayer-checkbox">
+                                    <input type="checkbox" id="fajr-check" title="Mark as performed">
+                                </div>
+                            </div>
+                            <div class="prayer-item">
+                                <div class="prayer-name">
+                                    <i class="fas fa-sun"></i> Sunrise
+                                </div>
+                                <div class="prayer-time" id="sunrise-time">--:--</div>
+                                <div class="prayer-checkbox">
+                                    <!-- No checkbox for Sunrise -->
+                                </div>
+                            </div>
+                            <div class="prayer-item">
+                                <div class="prayer-name">
+                                    <i class="fas fa-sun"></i> Dhuhr
+                                </div>
+                                <div class="prayer-time" id="dhuhr-time">--:--</div>
+                                <div class="prayer-checkbox">
+                                    <input type="checkbox" id="dhuhr-check" title="Mark as performed">
+                                </div>
+                            </div>
+                            <div class="prayer-item">
+                                <div class="prayer-name">
+                                    <i class="fas fa-sun"></i> Asr
+                                </div>
+                                <div class="prayer-time" id="asr-time">--:--</div>
+                                <div class="prayer-checkbox">
+                                    <input type="checkbox" id="asr-check" title="Mark as performed">
+                                </div>
+                            </div>
+                            <div class="prayer-item">
+                                <div class="prayer-name">
+                                    <i class="fas fa-sun"></i> Maghrib
+                                </div>
+                                <div class="prayer-time" id="maghrib-time">--:--</div>
+                                <div class="prayer-checkbox">
+                                    <input type="checkbox" id="maghrib-check" title="Mark as performed">
+                                </div>
+                            </div>
+                            <div class="prayer-item">
+                                <div class="prayer-name">
+                                    <i class="fas fa-moon"></i> Isha
+                                </div>
+                                <div class="prayer-time" id="isha-time">--:--</div>
+                                <div class="prayer-checkbox">
+                                    <input type="checkbox" id="isha-check" title="Mark as performed">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hadith of the Day -->
+            <div class="hadith-container">
+                <h3 class="hadith-title"><i class="fas fa-book-open"></i> Hadith of the Day</h3>
+                <p class="hadith-content" id="hadith-content">The Messenger of Allah (ﷺ) said, "The best of you are those who learn the Qur'an and teach it."</p>
+                <p class="hadith-reference" id="hadith-reference">Sahih al-Bukhari 5027</p>
+            </div>
+            
+            <div class="author-container">
+                <h1 class="author-name" id="author-name">AKHTAR ALI</h1>
+            </div>
+        </div>
+    </main>
+
+    <!-- Prayer Alert Modal -->
+    <div class="modal-overlay" id="prayer-alert-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-bell"></i> Prayer Alert</h3>
+                <button class="modal-close" id="close-prayer-alert">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="prayer-alert-content">
+                    <h3 style="text-align: center; margin-bottom: 15px;">It's time for <span id="current-prayer-name">Fajr</span> prayer!</h3>
+                    <p style="text-align: center; margin-bottom: 20px;">May Allah accept your prayers.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="stop-prayer-alert">Stop Alert</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Prayer Summary Modal -->
+    <div class="modal-overlay" id="prayer-summary-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-clipboard-list"></i> Daily Prayer Summary</h3>
+                <button class="modal-close" id="close-prayer-summary">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="prayer-summary" id="prayer-summary">
+                    <!-- Prayer summary will be added here dynamically -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="close-summary-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Royal Timer App. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // DOM Elements
+        const body = document.body;
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = themeToggle.querySelector('i');
+        const analogDisplay = document.querySelector('.analog-display');
+        const digitalDisplay = document.querySelector('.digital-display');
+        const analogOption = document.querySelector('.analog-option');
+        const digitalOption = document.querySelector('.digital-option');
+        const toggleSlider = document.querySelector('.toggle-slider');
+        
+        // Clock Hands
+        const hourHand = document.getElementById('hour-hand');
+        const minuteHand = document.getElementById('minute-hand');
+        const secondHand = document.getElementById('second-hand');
+        
+        // Digital Clock Elements
+        const hoursElement = document.getElementById('hours');
+        const minutesElement = document.getElementById('minutes');
+        const secondsElement = document.getElementById('seconds');
+        const periodElement = document.getElementById('period');
+        
+        // Alarm Elements
+        const alarmForm = document.getElementById('alarm-form');
+        const alarmTimeInput = document.getElementById('alarm-time');
+        const alarmList = document.getElementById('alarm-list');
+        
+        // Prayer Times Elements
+        const locationDisplay = document.getElementById('location-display');
+        const fajrTime = document.getElementById('fajr-time');
+        const sunriseTime = document.getElementById('sunrise-time');
+        const dhuhrTime = document.getElementById('dhuhr-time');
+        const asrTime = document.getElementById('asr-time');
+        const maghribTime = document.getElementById('maghrib-time');
+        const ishaTime = document.getElementById('isha-time');
+        
+        // Prayer Checkboxes
+        const fajrCheck = document.getElementById('fajr-check');
+        const dhuhrCheck = document.getElementById('dhuhr-check');
+        const asrCheck = document.getElementById('asr-check');
+        const maghribCheck = document.getElementById('maghrib-check');
+        const ishaCheck = document.getElementById('isha-check');
+        
+        // Coming Prayer Alert
+        const comingPrayerAlert = document.getElementById('coming-prayer-alert');
+        const nextPrayerName = document.getElementById('next-prayer-name');
+        const nextPrayerTime = document.getElementById('next-prayer-time');
+        const prayerCountdown = document.getElementById('prayer-countdown');
+        
+        // Prayer Alert Modal
+        const prayerAlertModal = document.getElementById('prayer-alert-modal');
+        const closePrayerAlert = document.getElementById('close-prayer-alert');
+        const stopPrayerAlert = document.getElementById('stop-prayer-alert');
+        const currentPrayerName = document.getElementById('current-prayer-name');
+        
+        // Prayer Summary Modal
+        const prayerSummaryModal = document.getElementById('prayer-summary-modal');
+        const closePrayerSummary = document.getElementById('close-prayer-summary');
+        const closeSummaryBtn = document.getElementById('close-summary-btn');
+        const prayerSummary = document.getElementById('prayer-summary');
+        
+        // Hadith Elements
+        const hadithContent = document.getElementById('hadith-content');
+        const hadithReference = document.getElementById('hadith-reference');
+        
+        // Toast Container
+        const toastContainer = document.getElementById('toast-container');
+        
+        // Author Name Animation
+        const authorName = document.getElementById('author-name');
+        
+        // State
+        let alarms = JSON.parse(localStorage.getItem('timer-app-alarms')) || [];
+        let clockType = localStorage.getItem('timer-app-clock-type') || 'analog';
+        let darkMode = localStorage.getItem('timer-app-dark-mode') === 'true';
+        let latitude = null;
+        let longitude = null;
+        let alarmSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+        let activeAlarms = [];
+        let prayerTimes = {};
+        let nextPrayer = null;
+        let prayerAlertActive = false;
+        let prayerAlertInterval = null;
+        let prayerChecks = JSON.parse(localStorage.getItem('timer-app-prayer-checks')) || {
+            date: new Date().toDateString(),
+            fajr: false,
+            dhuhr: false,
+            asr: false,
+            maghrib: false,
+            isha: false
+        };
+        
+        // Hadiths Collection
+        const hadiths = [
+            {
+                content: "The Messenger of Allah (ﷺ) said, 'The best of you are those who learn the Qur'an and teach it.'",
+                reference: "Sahih al-Bukhari 5027"
+            },
+            {
+                content: "The Prophet Muhammad (ﷺ) said: 'None of you truly believes until he loves for his brother what he loves for himself.'",
+                reference: "Sahih al-Bukhari 13, Sahih Muslim 45"
+            },
+            {
+                content: "The Messenger of Allah (ﷺ) said: 'The strong person is not the one who can wrestle someone else down. The strong person is the one who can control himself when he is angry.'",
+                reference: "Sahih al-Bukhari 6114"
+            },
+            {
+                content: "The Prophet (ﷺ) said, 'Whoever believes in Allah and the Last Day should speak good or remain silent.'",
+                reference: "Sahih al-Bukhari 6475, Sahih Muslim 47"
+            },
+            {
+                content: "The Prophet (ﷺ) said: 'Make things easy and do not make them difficult, cheer people up and do not repel them.'",
+                reference: "Sahih al-Bukhari 69"
+            },
+            {
+                content: "The Prophet (ﷺ) said: 'The most beloved of deeds to Allah are those that are most consistent, even if they are small.'",
+                reference: "Sahih al-Bukhari 6464, Sahih Muslim 782"
+            },
+            {
+                content: "The Prophet (ﷺ) said: 'Whoever does not show mercy to people, Allah will not show mercy to him.'",
+                reference: "Sahih al-Bukhari 7376, Sahih Muslim 2319"
+            }
+        ];
+        
+        // Initialize the app
+        function init() {
+            // Set dark mode based on saved preference
+            if (darkMode) {
+                enableDarkMode();
+            }
+            
+            // Set clock type based on saved preference
+            if (clockType === 'digital') {
+                setDigitalClock();
+            } else {
+                setAnalogClock();
+            }
+            
+            // Initialize event listeners
+            initEventListeners();
+            
+            // Start the clock
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            // Load alarms
+            renderAlarms();
+            
+            // Get location and prayer times
+            getLocation();
+            
+            // Check alarms every second
+            setInterval(checkAlarms, 1000);
+            
+            // Initialize author name animation
+            initAuthorAnimation();
+            
+            // Load prayer checks
+            loadPrayerChecks();
+            
+            // Display hadith of the day
+            displayHadithOfTheDay();
+            
+            // Check if it's after Isha time to show summary
+            setTimeout(checkForPrayerSummary, 5000);
+        }
+        
+        // Initialize event listeners
+        function initEventListeners() {
+            // Theme toggle
+            themeToggle.addEventListener('click', toggleDarkMode);
+            
+            // Clock toggle
+            analogOption.addEventListener('click', setAnalogClock);
+            digitalOption.addEventListener('click', setDigitalClock);
+            
+            // Alarm form
+            alarmForm.addEventListener('submit', handleAlarmSubmit);
+            
+            // Prayer checkboxes
+            fajrCheck.addEventListener('change', updatePrayerChecks);
+            dhuhrCheck.addEventListener('change', updatePrayerChecks);
+            asrCheck.addEventListener('change', updatePrayerChecks);
+            maghribCheck.addEventListener('change', updatePrayerChecks);
+            ishaCheck.addEventListener('change', updatePrayerChecks);
+            
+            // Prayer alert modal
+            closePrayerAlert.addEventListener('click', closePrayerAlertModal);
+            stopPrayerAlert.addEventListener('click', stopPrayerAlertSound);
+            
+            // Prayer summary modal
+            closePrayerSummary.addEventListener('click', closePrayerSummaryModal);
+            closeSummaryBtn.addEventListener('click', closePrayerSummaryModal);
+        }
+        
+        // Initialize author name animation
+        function initAuthorAnimation() {
+            const text = authorName.textContent;
+            authorName.textContent = '';
+            
+            // Create spans for each letter with delay
+            for (let i = 0; i < text.length; i++) {
+                const span = document.createElement('span');
+                span.textContent = text[i];
+                span.style.setProperty('--i', i);
+                authorName.appendChild(span);
+            }
+        }
+        
+        // Display hadith of the day
+        function displayHadithOfTheDay() {
+            // Get today's date as a number (0-6 for day of week)
+            const today = new Date().getDay();
+            
+            // Use modulo to ensure we don't go out of bounds
+            const hadithIndex = today % hadiths.length;
+            const hadith = hadiths[hadithIndex];
+            
+            hadithContent.textContent = hadith.content;
+            hadithReference.textContent = hadith.reference;
+        }
+        
+        // Toggle dark mode
+        function toggleDarkMode() {
+            darkMode = !darkMode;
+            localStorage.setItem('timer-app-dark-mode', darkMode);
+            
+            if (darkMode) {
+                enableDarkMode();
+            } else {
+                disableDarkMode();
+            }
+        }
+        
+        // Enable dark mode
+        function enableDarkMode() {
+            body.classList.add('dark');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+        
+        // Disable dark mode
+        function disableDarkMode() {
+            body.classList.remove('dark');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        }
+        
+        // Set analog clock
+        function setAnalogClock() {
+            analogOption.classList.add('active');
+            digitalOption.classList.remove('active');
+            toggleSlider.classList.remove('digital');
+            
+            analogDisplay.classList.add('active');
+            digitalDisplay.classList.remove('active');
+            
+            clockType = 'analog';
+            localStorage.setItem('timer-app-clock-type', clockType);
+        }
+        
+        // Set digital clock
+        function setDigitalClock() {
+            digitalOption.classList.add('active');
+            analogOption.classList.remove('active');
+            toggleSlider.classList.add('digital');
+            
+            digitalDisplay.classList.add('active');
+            analogDisplay.classList.remove('active');
+            
+            clockType = 'digital';
+            localStorage.setItem('timer-app-clock-type', clockType);
+        }
+        
+        // Update clock
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            
+            // Update analog clock
+            const hourDegrees = ((hours % 12) * 30) + (minutes * 0.5);
+            const minuteDegrees = minutes * 6;
+            const secondDegrees = seconds * 6;
+            
+            hourHand.style.transform = `translateX(-50%) rotate(${hourDegrees}deg)`;
+            minuteHand.style.transform = `translateX(-50%) rotate(${minuteDegrees}deg)`;
+            secondHand.style.transform = `translateX(-50%) rotate(${secondDegrees}deg)`;
+            
+            // Update digital clock
+            const formattedHours = hours % 12 || 12;
+            const period = hours >= 12 ? 'PM' : 'AM';
+            
+            hoursElement.textContent = formattedHours.toString().padStart(2, '0');
+            minutesElement.textContent = minutes.toString().padStart(2, '0');
+            secondsElement.textContent = seconds.toString().padStart(2, '0');
+            periodElement.textContent = period;
+            
+            // Update prayer countdown if next prayer is set
+            if (nextPrayer) {
+                updatePrayerCountdown(now);
+            }
+            
+            // Check if it's time for prayer
+            checkPrayerTimes(now);
+        }
+        
+        // Handle alarm form submission
+        function handleAlarmSubmit(e) {
+            e.preventDefault();
+            
+            const alarmTime = alarmTimeInput.value;
+            if (!alarmTime) return;
+            
+            const [hours, minutes] = alarmTime.split(':');
+            const now = new Date();
+            const alarmDate = new Date();
+            
+            alarmDate.setHours(parseInt(hours));
+            alarmDate.setMinutes(parseInt(minutes));
+            alarmDate.setSeconds(0);
+            
+            // If alarm time is earlier than current time, set it for tomorrow
+            if (alarmDate < now) {
+                alarmDate.setDate(alarmDate.getDate() + 1);
+            }
+            
+            const newAlarm = {
+                id: Date.now().toString(),
+                time: alarmTime,
+                timestamp: alarmDate.getTime(),
+                active: true
+            };
+            
+            alarms.push(newAlarm);
+            saveAlarms();
+            renderAlarms();
+            
+            // Reset form
+            alarmForm.reset();
+            
+            showToast('Alarm set successfully!', 'success');
+        }
+        
+        // Render alarms
+        function renderAlarms() {
+            if (alarms.length === 0) {
+                alarmList.innerHTML = `
+                    <div class="no-alarms" style="text-align: center; padding: 1rem; color: var(--gray);">
+                        <i class="fas fa-bell-slash" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                        <p>No alarms set. Add an alarm to get started.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            alarmList.innerHTML = '';
+            
+            alarms.sort((a, b) => {
+                const timeA = a.time.split(':');
+                const timeB = b.time.split(':');
+                
+                const hoursA = parseInt(timeA[0]);
+                const hoursB = parseInt(timeB[0]);
+                
+                if (hoursA !== hoursB) {
+                    return hoursA - hoursB;
+                }
+                
+                return parseInt(timeA[1]) - parseInt(timeB[1]);
+            }).forEach(alarm => {
+                const alarmItem = document.createElement('div');
+                alarmItem.className = 'alarm-item';
+                
+                const [hours, minutes] = alarm.time.split(':');
+                const formattedHours = parseInt(hours) % 12 || 12;
+                const period = parseInt(hours) >= 12 ? 'PM' : 'AM';
+                
+                alarmItem.innerHTML = `
+                    <div class="alarm-time">
+                        ${formattedHours}:${minutes.padStart(2, '0')} ${period}
+                    </div>
+                    <div class="alarm-actions">
+                        <button class="btn-icon toggle-alarm" data-id="${alarm.id}" title="${alarm.active ? 'Disable' : 'Enable'} alarm">
+                            <i class="fas ${alarm.active ? 'fa-bell' : 'fa-bell-slash'}"></i>
+                        </button>
+                        <button class="btn-icon delete-alarm" data-id="${alarm.id}" title="Delete alarm">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                alarmList.appendChild(alarmItem);
+                
+                // Add event listeners
+                alarmItem.querySelector('.toggle-alarm').addEventListener('click', toggleAlarm);
+                alarmItem.querySelector('.delete-alarm').addEventListener('click', deleteAlarm);
+            });
+        }
+        
+        // Toggle alarm
+        function toggleAlarm(e) {
+            const id = e.currentTarget.getAttribute('data-id');
+            const alarm = alarms.find(alarm => alarm.id === id);
+            
+            if (alarm) {
+                alarm.active = !alarm.active;
+                saveAlarms();
+                renderAlarms();
+                
+                showToast(`Alarm ${alarm.active ? 'enabled' : 'disabled'}!`, 'success');
+            }
+        }
+        
+        // Delete alarm
+        function deleteAlarm(e) {
+            const id = e.currentTarget.getAttribute('data-id');
+            alarms = alarms.filter(alarm => alarm.id !== id);
+            
+            saveAlarms();
+            renderAlarms();
+            
+            showToast('Alarm deleted!', 'success');
+        }
+        
+        // Check alarms
+        function checkAlarms() {
+            const now = new Date();
+            const currentTime = now.getTime();
+            
+            alarms.forEach(alarm => {
+                if (!alarm.active) return;
+                
+                // Check if alarm should trigger (within 1 second)
+                if (Math.abs(currentTime - alarm.timestamp) < 1000) {
+                    triggerAlarm(alarm);
+                }
+                
+                // Update timestamp for tomorrow if alarm has passed
+                if (currentTime > alarm.timestamp) {
+                    const tomorrow = new Date(alarm.timestamp);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    alarm.timestamp = tomorrow.getTime();
+                    saveAlarms();
+                }
+            });
+        }
+        
+        // Trigger alarm
+        function triggerAlarm(alarm) {
+            const [hours, minutes] = alarm.time.split(':');
+            const formattedHours = parseInt(hours) % 12 || 12;
+            const period = parseInt(hours) >= 12 ? 'PM' : 'AM';
+            
+            showToast(`Alarm! ${formattedHours}:${minutes.padStart(2, '0')} ${period}`, 'warning');
+            
+            // Play alarm sound
+            playAlarmSound();
+        }
+        
+        // Play alarm sound
+        function playAlarmSound() {
+            alarmSound.currentTime = 0;
+            alarmSound.play();
+            
+            // Stop after 10 seconds
+            setTimeout(() => {
+                alarmSound.pause();
+            }, 10000);
+        }
+        
+        // Get location
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        latitude = position.coords.latitude;
+                        longitude = position.coords.longitude;
+                        updateLocationDisplay();
+                        fetchPrayerTimes();
+                    },
+                    (error) => {
+                        console.error('Error getting location:', error);
+                        // Use default coordinates or environment variables
+                        useDefaultLocation();
+                    }
+                );
+            } else {
+                console.error('Geolocation is not supported by this browser.');
+                useDefaultLocation();
+            }
+        }
+        
+        // Use default location
+        function useDefaultLocation() {
+            // Try to use environment variables
+            const envLatitude = '37.7749'; // Default to San Francisco if not available
+            const envLongitude = '-122.4194';
+            
+            latitude = parseFloat(envLatitude);
+            longitude = parseFloat(envLongitude);
+            updateLocationDisplay();
+            fetchPrayerTimes();
+        }
+        
+        // Update location display
+        function updateLocationDisplay() {
+            // Reverse geocode to get location name
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
+                .then(response => response.json())
+                .then(data => {
+                    const city = data.address.city || data.address.town || data.address.village || '';
+                    const state = data.address.state || '';
+                    const country = data.address.country || '';
+                    
+                    let locationText = '';
+                    if (city) locationText += city;
+                    if (state && city) locationText += `, ${state}`;
+                    else if (state) locationText += state;
+                    if (country && (city || state)) locationText += `, ${country}`;
+                    else if (country) locationText += country;
+                    
+                    locationDisplay.textContent = locationText || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+                })
+                .catch(error => {
+                    console.error('Error getting location name:', error);
+                    locationDisplay.textContent = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+                });
+        }
+        
+        // Fetch prayer times using AlAdhan API
+        function fetchPrayerTimes() {
+            const date = new Date();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            
+            // AlAdhan API endpoint
+            const url = `https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=2`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.data) {
+                        const today = date.getDate() - 1; // API uses 0-based index for days
+                        const prayerData = data.data[today];
+                        
+                        if (prayerData && prayerData.timings) {
+                            prayerTimes = prayerData.timings;
+                            displayPrayerTimes(prayerTimes);
+                            findNextPrayer();
+                        } else {
+                            showToast('Error loading prayer times', 'error');
+                        }
+                    } else {
+                        showToast('Error loading prayer times', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching prayer times:', error);
+                    showToast('Error loading prayer times', 'error');
+                });
+        }
+        
+        // Display prayer times
+        function displayPrayerTimes(timings) {
+            // Format and display prayer times
+            fajrTime.textContent = formatAPITime(timings.Fajr);
+            sunriseTime.textContent = formatAPITime(timings.Sunrise);
+            dhuhrTime.textContent = formatAPITime(timings.Dhuhr);
+            asrTime.textContent = formatAPITime(timings.Asr);
+            maghribTime.textContent = formatAPITime(timings.Maghrib);
+            ishaTime.textContent = formatAPITime(timings.Isha);
+            
+            // Highlight next prayer
+            highlightNextPrayer();
+        }
+        
+        // Format API time (convert 24h format with seconds to 12h format)
+        function formatAPITime(timeString) {
+            // API returns time in format "HH:MM (GMT+X)" or "HH:MM:SS"
+            const timePart = timeString.split(' ')[0]; // Get just the time part
+            const [hours, minutes] = timePart.split(':');
+            
+            const hoursNum = parseInt(hours);
+            const formattedHours = hoursNum % 12 || 12;
+            const period = hoursNum >= 12 ? 'PM' : 'AM';
+            
+            return `${formattedHours}:${minutes} ${period}`;
+        }
+        
+        // Convert API time string to Date object
+        function timeStringToDate(timeString) {
+            const now = new Date();
+            const timePart = timeString.split(' ')[0]; // Get just the time part
+            const [hours, minutes] = timePart.split(':');
+            
+            const prayerDate = new Date(now);
+            prayerDate.setHours(parseInt(hours));
+            prayerDate.setMinutes(parseInt(minutes));
+            prayerDate.setSeconds(0);
+            
+            // If prayer time has passed for today, set it for tomorrow
+            if (prayerDate < now) {
+                prayerDate.setDate(prayerDate.getDate() + 1);
+            }
+            
+            return prayerDate;
+        }
+        
+        // Find next prayer
+        function findNextPrayer() {
+            const now = new Date();
+            
+            // Create array of prayers with their times
+            const prayers = [
+                { name: 'Fajr', time: timeStringToDate(prayerTimes.Fajr), displayName: 'Fajr' },
+                { name: 'Sunrise', time: timeStringToDate(prayerTimes.Sunrise), displayName: 'Sunrise' },
+                { name: 'Dhuhr', time: timeStringToDate(prayerTimes.Dhuhr), displayName: 'Dhuhr' },
+                { name: 'Asr', time: timeStringToDate(prayerTimes.Asr), displayName: 'Asr' },
+                { name: 'Maghrib', time: timeStringToDate(prayerTimes.Maghrib), displayName: 'Maghrib' },
+                { name: 'Isha', time: timeStringToDate(prayerTimes.Isha), displayName: 'Isha' }
+            ];
+            
+            // Sort prayers by time
+            prayers.sort((a, b) => a.time - b.time);
+            
+            // Find the next prayer
+            nextPrayer = prayers[0];
+            
+            // Update coming prayer alert
+            updateComingPrayerAlert();
+        }
+        
+        // Update coming prayer alert
+        function updateComingPrayerAlert() {
+            if (!nextPrayer) return;
+            
+            // Show the alert
+            comingPrayerAlert.style.display = 'flex';
+            
+            // Update prayer name and time
+            nextPrayerName.textContent = nextPrayer.displayName;
+            nextPrayerTime.textContent = formatTime(nextPrayer.time);
+            
+            // Initial update of countdown
+            updatePrayerCountdown(new Date());
+        }
+        
+        // Update prayer countdown
+        function updatePrayerCountdown(now) {
+            if (!nextPrayer) return;
+            
+            const timeDiff = nextPrayer.time - now;
+            
+            if (timeDiff <= 0) {
+                // Time for prayer, update next prayer
+                findNextPrayer();
+                return;
+            }
+            
+            // Calculate hours, minutes, seconds
+            const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+            
+            // Update countdown display
+            prayerCountdown.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Format time for display
+        function formatTime(date) {
+            const hours = date.getHours() % 12 || 12;
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const period = date.getHours() >= 12 ? 'PM' : 'AM';
+            
+            return `${hours}:${minutes} ${period}`;
+        }
+        
+        // Highlight next prayer
+        function highlightNextPrayer() {
+            if (!nextPrayer) return;
+            
+            // Remove next-prayer class from all
+            const prayerItems = document.querySelectorAll('.prayer-item');
+            prayerItems.forEach(item => {
+                item.classList.remove('next-prayer');
+            });
+            
+            // Add next-prayer class to the next prayer
+            const prayerIndex = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].indexOf(nextPrayer.name);
+            if (prayerIndex !== -1) {
+                prayerItems[prayerIndex].classList.add('next-prayer');
+            }
+        }
+        
+        // Check prayer times
+        function checkPrayerTimes(now) {
+            if (!prayerTimes || !nextPrayer) return;
+            
+            const timeDiff = nextPrayer.time - now;
+            
+            // If it's time for prayer (within 1 minute) and no alert is active
+            if (timeDiff <= 60000 && timeDiff > 0 && !prayerAlertActive) {
+                // Don't show alert for Sunrise
+                if (nextPrayer.name !== 'Sunrise') {
+                    showPrayerAlert(nextPrayer.displayName);
+                }
+            }
+            
+            // Check if it's after Isha time to show summary
+            checkForPrayerSummary();
+        }
+        
+        // Show prayer alert
+        function showPrayerAlert(prayerName) {
+            // Set current prayer name
+            currentPrayerName.textContent = prayerName;
+            
+            // Show modal
+            prayerAlertModal.classList.add('active');
+            
+            // Start beeping
+            startPrayerAlertSound();
+            
+            // Set alert as active
+            prayerAlertActive = true;
+        }
+        
+        // Start prayer alert sound
+        function startPrayerAlertSound() {
+            // Play sound
+            alarmSound.loop = true;
+            alarmSound.play();
+            
+            // Set interval to play sound every 5 seconds
+            prayerAlertInterval = setInterval(() => {
+                alarmSound.currentTime = 0;
+            }, 5000);
+        }
+        
+        // Stop prayer alert sound
+        function stopPrayerAlertSound() {
+            // Stop sound
+            alarmSound.pause();
+            alarmSound.currentTime = 0;
+            alarmSound.loop = false;
+            
+            // Clear interval
+            clearInterval(prayerAlertInterval);
+            
+            // Close modal
+            closePrayerAlertModal();
+            
+            // Set alert as inactive
+            prayerAlertActive = false;
+        }
+        
+        // Close prayer alert modal
+        function closePrayerAlertModal() {
+            prayerAlertModal.classList.remove('active');
+        }
+        
+        // Load prayer checks
+        function loadPrayerChecks() {
+            // Check if it's a new day
+            if (prayerChecks.date !== new Date().toDateString()) {
+                // Reset prayer checks for new day
+                prayerChecks = {
+                    date: new Date().toDateString(),
+                    fajr: false,
+                    dhuhr: false,
+                    asr: false,
+                    maghrib: false,
+                    isha: false
+                };
+                savePrayerChecks();
+            }
+            
+            // Set checkboxes
+            fajrCheck.checked = prayerChecks.fajr;
+            dhuhrCheck.checked = prayerChecks.dhuhr;
+            asrCheck.checked = prayerChecks.asr;
+            maghribCheck.checked = prayerChecks.maghrib;
+            ishaCheck.checked = prayerChecks.isha;
+        }
+        
+        // Update prayer checks
+        function updatePrayerChecks() {
+            prayerChecks.fajr = fajrCheck.checked;
+            prayerChecks.dhuhr = dhuhrCheck.checked;
+            prayerChecks.asr = asrCheck.checked;
+            prayerChecks.maghrib = maghribCheck.checked;
+            prayerChecks.isha = ishaCheck.checked;
+            
+            savePrayerChecks();
+        }
+        
+        // Save prayer checks
+        function savePrayerChecks() {
+            localStorage.setItem('timer-app-prayer-checks', JSON.stringify(prayerChecks));
+        }
+        
+        // Check for prayer summary
+        function checkForPrayerSummary() {
+            // If no prayer times yet, return
+            if (!prayerTimes) return;
+            
+            const now = new Date();
+            const ishaTime = timeStringToDate(prayerTimes.Isha);
+            
+            // If it's after Isha time and before midnight
+            if (now > ishaTime && now.getHours() >= 21 && now.getHours() < 24) {
+                // Check if summary has been shown today
+                const summaryShown = localStorage.getItem('timer-app-summary-shown');
+                if (summaryShown !== new Date().toDateString()) {
+                    // Show summary
+                    showPrayerSummary();
+                    
+                    // Mark as shown
+                    localStorage.setItem('timer-app-summary-shown', new Date().toDateString());
+                }
+            }
+        }
+        
+        // Show prayer summary
+        function showPrayerSummary() {
+            // Generate summary content
+            let summaryHTML = '';
+            
+            // Add each prayer
+            summaryHTML += createPrayerSummaryItem('Fajr', prayerChecks.fajr);
+            summaryHTML += createPrayerSummaryItem('Dhuhr', prayerChecks.dhuhr);
+            summaryHTML += createPrayerSummaryItem('Asr', prayerChecks.asr);
+            summaryHTML += createPrayerSummaryItem('Maghrib', prayerChecks.maghrib);
+            summaryHTML += createPrayerSummaryItem('Isha', prayerChecks.isha);
+            
+            // Add total
+            const totalPrayers = [prayerChecks.fajr, prayerChecks.dhuhr, prayerChecks.asr, prayerChecks.maghrib, prayerChecks.isha].filter(Boolean).length;
+            summaryHTML += `
+                <div class="prayer-summary-total">
+                    You have performed ${totalPrayers} out of 5 prayers today.
+                </div>
+            `;
+            
+            // Set summary content
+            prayerSummary.innerHTML = summaryHTML;
+            
+            // Show modal
+            prayerSummaryModal.classList.add('active');
+        }
+        
+        // Create prayer summary item
+        function createPrayerSummaryItem(name, completed) {
+            return `
+                <div class="prayer-summary-item">
+                    <div class="prayer-summary-name">${name}</div>
+                    <div class="prayer-summary-status ${completed ? 'completed' : 'missed'}">
+                        ${completed ? 'Completed' : 'Missed'}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Close prayer summary modal
+        function closePrayerSummaryModal() {
+            prayerSummaryModal.classList.remove('active');
+        }
+        
+        // Save alarms to localStorage
+        function saveAlarms() {
+            localStorage.setItem('timer-app-alarms', JSON.stringify(alarms));
+        }
+        
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'warning' ? 'fa-exclamation-circle' : 'fa-times-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Remove toast after 5 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
